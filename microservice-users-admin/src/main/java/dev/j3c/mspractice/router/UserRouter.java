@@ -57,6 +57,7 @@ public class UserRouter {
                         .body(BodyInserters.fromPublisher(getAllUsersUsecase.get()
                                 .doOnNext(user -> logger.info("[MS-ADMIN_USERS] Get User All Users")), UserDto.class)));
     }
+
     @Bean
     public RouterFunction<ServerResponse> updateUserByIdRoute(UpdateUserByIdUsecase updateUserById) {
         Function<UserDto, Mono<ServerResponse>> executor = (UserDto userDto) ->
