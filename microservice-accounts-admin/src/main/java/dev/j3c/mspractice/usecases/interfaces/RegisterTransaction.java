@@ -1,4 +1,4 @@
-package dev.j3c.mspractice.usecases;
+package dev.j3c.mspractice.usecases.interfaces;
 
 import dev.j3c.mspractice.dto.TransactionDto;
 import dev.j3c.mspractice.dto.TransactionResultDto;

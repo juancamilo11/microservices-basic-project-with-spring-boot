@@ -7,6 +7,7 @@ import dev.j3c.mspractice.dto.TransactionDto;
 import dev.j3c.mspractice.dto.TransactionResultDto;
 import dev.j3c.mspractice.dto.helpers.EnumTransactionTypeDto;
 import dev.j3c.mspractice.repository.AccountRepository;
+import dev.j3c.mspractice.usecases.interfaces.RegisterTransaction;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
