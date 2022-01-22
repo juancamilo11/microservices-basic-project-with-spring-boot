@@ -57,5 +57,38 @@ public class UserRouter {
                         .body(BodyInserters.fromPublisher(getAllUsersUsecase.get()
                                 .doOnNext(user -> logger.info("[MS-ADMIN_USERS] Get User All Users")), UserDto.class)));
     }
+    @Bean
+    public RouterFunction<ServerResponse> updateUserByIdRoute(UpdateUserByIdUsecase updateUserById) {
+        Function<UserDto, Mono<ServerResponse>> executor = (UserDto userDto) ->
+                updateUserById.apply(userDto)
+                        .flatMap(userUpdatedDto -> ServerResponse.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(userUpdatedDto));
 
+        return route(PUT("/update/user")
+                .and(accept(MediaType.APPLICATION_JSON)), request -> request
+                .bodyToMono(UserDto.class)
+                .flatMap(executor)
+                .doOnNext(result -> logger.info("[MS-ADMIN_USERS] Update User")));
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> deleteUserByIdRoute(DeleteUserByIdUsecase deleteUserByIdUsecase) {
+        return route(DELETE("/delete/{id}")
+                .and(accept(MediaType.APPLICATION_JSON)), request -> ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromPublisher(deleteUserByIdUsecase.accept(request.pathVariable("id"))
+                        .doOnNext(result -> logger.info("[MS-ADMIN_USERS] Delete User By Id")), Void.class)));
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> verifyUserExistenceByIdRoute(VerifyUserExistenceByIdUsecase verifyUserExistenceByIdUsecase) {
+        return route(GET("/get/exists-user/{id}")
+                .and(accept(MediaType.APPLICATION_JSON)), request -> ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromPublisher(verifyUserExistenceByIdUsecase.apply(request.pathVariable("id"))
+                        .doOnNext(result -> logger.info("[MS-ADMIN_USERS] Verify User Existence By Id")), Boolean.class)));
+    }
 }
