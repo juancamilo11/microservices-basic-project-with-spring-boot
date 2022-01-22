@@ -3,7 +3,7 @@ package dev.j3c.mspractice.dto.helpers;
 import java.util.Arrays;
 
 public enum EnumTransactionTypeDto {
-    DEPOSIT("Book"),
+    DEPOSIT("Deposit"),
     WITHDRAWAL("Withdrawal");
 
     private final String type;
@@ -23,6 +23,6 @@ public enum EnumTransactionTypeDto {
     public static boolean enumValueIsValid(String type) {
         return Arrays
                 .stream(EnumTransactionTypeDto.values())
-                .anyMatch(enumValue -> enumValue.getType().equals(type));
+                .anyMatch(enumValue -> enumValue.getType().equalsIgnoreCase(type));
     }
 }

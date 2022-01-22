@@ -1,7 +1,7 @@
 package dev.j3c.mspractice.dto.helpers;
 
 public enum EnumTransactionTypeDto {
-    DEPOSIT("Book"),
+    DEPOSIT("Deposit"),
     WITHDRAWAL("Withdrawal");
 
     private final String type;

@@ -1,6 +1,7 @@
 package dev.j3c.mspractice.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import dev.j3c.mspractice.dto.TransactionResultDto;
 import dev.j3c.mspractice.usecases.ReceiveFromTraceabilityQueueUsecase;
@@ -8,7 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+import java.util.Map;
+
+@Configuration
 public class RabbitMQConsumerConfig {
 
     public static final String TRACEABILITY_QUEUE = "bank.traceability.queue";
@@ -22,8 +28,20 @@ public class RabbitMQConsumerConfig {
 
     @RabbitListener(queues = {TRACEABILITY_QUEUE})
     public void listenerOfNewStockQueue(String messageReceived) throws JsonProcessingException {
-        final Gson gson = new Gson();
+        //System.out.println(messageReceived);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = mapper.readValue(messageReceived, Map.class);
         logger.info("[MS-TRACEABILITY] Listening to " + TRACEABILITY_QUEUE + " Queue");
-        receiveFromTraceabilityQueueUsecase.receiveMessage(gson.fromJson(messageReceived, TransactionResultDto.class)).subscribe();
+
+        receiveFromTraceabilityQueueUsecase.receiveMessage(
+                TransactionResultDto.builder()
+                        .id(map.get("id").toString())
+                        .userId(map.get("userId").toString())
+                        .hasErrors(Boolean.parseBoolean(map.get("hasErrors").toString()))
+                        .message(map.get("message").toString())
+                        .date(LocalDate.now())
+                        .build())
+                .subscribe();
     }
 }

@@ -90,6 +90,7 @@ public class UserRouter {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromPublisher(verifyUserExistenceByIdUsecase.apply(request.pathVariable("id"))
-                        .doOnNext(result -> logger.info("[MS-ADMIN_USERS] Verify User Existence By Id")), Boolean.class)));
+                        .doOnNext(result -> logger.info("[MS-ADMIN_USERS] Verify User Existence")), Boolean.class)));
     }
+
 }

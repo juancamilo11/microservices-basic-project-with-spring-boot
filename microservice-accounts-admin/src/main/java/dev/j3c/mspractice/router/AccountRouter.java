@@ -1,6 +1,8 @@
 package dev.j3c.mspractice.router;
 
 import dev.j3c.mspractice.dto.AccountDto;
+import dev.j3c.mspractice.dto.TransactionDto;
+import dev.j3c.mspractice.dto.TransactionResultDto;
 import dev.j3c.mspractice.usecases.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +79,21 @@ public class AccountRouter {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromPublisher(deleteAccountByIdUsecase.accept(request.pathVariable("id"))
                         .doOnNext(result -> logger.info("[MS-ACCOUNTS_ADMIN] Delete Account By Id")), Void.class)));
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> registerNewTransaction(RegisterTransactionUsecase registerTransactionUsecase) {
+        Function<TransactionDto, Mono<ServerResponse>> executor = (TransactionDto transactionDto) ->  registerTransactionUsecase
+                .apply(transactionDto)
+                .doOnNext(transactionResult -> logger.info("[MS-ACCOUNTS_ADMIN] Register New Transaction"))
+                .flatMap(transactionResult -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(transactionResult));
+        return route(POST("/post/transaction")
+                .and(accept(MediaType.APPLICATION_JSON)), request -> request
+                .bodyToMono(TransactionDto.class)
+                .flatMap(executor));
     }
 
 }

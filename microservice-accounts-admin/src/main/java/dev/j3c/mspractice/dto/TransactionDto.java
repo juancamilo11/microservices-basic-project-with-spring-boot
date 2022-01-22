@@ -38,14 +38,14 @@ public class TransactionDto {
         this.accountId = accountId;
         this.value = value;
         this.date = date;
-        this.validateItemFormat(type);
+        //this.validateItemFormat(type);
     }
 
-    private void validateItemFormat(String format) throws IllegalArgumentException {
-        if(!EnumTransactionTypeDto.enumValueIsValid(format)) {
-            throw new IllegalArgumentException("El tipo de transacción no es válido");
-        }
-    }
+//    private void validateItemFormat(String format) throws IllegalArgumentException {
+//        if(!EnumTransactionTypeDto.enumValueIsValid(format)) {
+//            throw new IllegalArgumentException("El tipo de transacción no es válido");
+//        }
+//    }
 }
 
 
